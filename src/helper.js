@@ -33,7 +33,7 @@
          */
         numFormat: function (number, decimals, decPoint, thousandsSep) {
 
-            number = (number + "").replace(/[^0-9+\-Ee.]/g, '');
+            number = ("" + number).replace(/[^0-9+\-Ee.]/g, '');
 
             var num        = !isFinite(+number) ? 0 : +number,
                 prec       = !isFinite(+decimals) ? 0 : Math.abs(decimals),
@@ -71,7 +71,7 @@
             }
 
             if (typeof mixedVar === 'object') {
-                if ($this.countProps(mixedVar) == 0) {
+                if ($this.countProps(mixedVar) === 0) {
                     return true;
                 }
             }
@@ -368,22 +368,22 @@
 
             var $this = this;
 
-            if (!$this.DEBUG || typeof console == 'undefined') {
+            if (!$this.DEBUG || typeof console === 'undefined') {
                 return false;
             }
 
             var postfix = "\t\tvars:";
 
-            if (type == 'e') { // error
+            if (type === 'e') { // error
                 vars !== undefined ? console.error(message + postfix, vars) : console.error(message);
 
-            } else if (type == 'w') { // warning
+            } else if (type === 'w') { // warning
                 vars !== undefined ? console.warn(message + postfix, vars) : console.warn(message);
 
-            } else if (type == 'i') { // information
+            } else if (type === 'i') { // information
                 vars !== undefined ? console.info(message + postfix, vars) : console.info(message);
 
-            } else if (type == 'l') { // log
+            } else if (type === 'l') { // log
                 vars !== undefined ? console.log(message + postfix, vars) : console.log(message);
 
             } else {
@@ -400,7 +400,7 @@
         trace: function (asString) {
             var $this = this;
 
-            if (!$this.DEBUG || typeof console == 'undefined') {
+            if (!$this.DEBUG || typeof console === 'undefined') {
                 return false;
             }
 
@@ -435,26 +435,26 @@
         dump: function (vars, name, showTrace) {
 
             // get type
-            if (typeof vars == 'string' || typeof vars == 'array') {
+            if (typeof vars === 'string' || typeof vars === 'array') {
                 var type = ' (' + typeof(vars) + ', ' + vars.length + ')';
             } else {
                 var type = ' (' + typeof(vars) + ')';
             }
 
             // wrap in vars quote if string
-            if (typeof vars == 'string') {
+            if (typeof vars === 'string') {
                 vars = '"' + vars + '"';
             }
 
             // get var name
-            if (typeof name == 'undefined') {
+            if (typeof name === 'undefined') {
                 name = '...' + type + ' = ';
             } else {
                 name += type + ' = ';
             }
 
             // is show trace in console
-            if (typeof showTrace == 'undefined') {
+            if (typeof showTrace === 'undefined') {
                 showTrace = false;
             }
 
@@ -470,6 +470,6 @@
 
             return true;
         }
-    }
+    };
 
 })(window, document);
