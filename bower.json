@@ -1,0 +1,14 @@
+{
+    "name": "jbzoo-utils",
+    "description": "JBZoo JavaScript helpers",
+    "main": "src/helper.js",
+    "authors": [
+        "Denis Smetannikov <denis@jbzoo.com>"
+    ],
+    "license": "MIT",
+    "keywords": [
+        "helpers"
+    ],
+    "homepage": "https://github.com/JBZoo/JS-Utils",
+    "moduleType": []
+}
