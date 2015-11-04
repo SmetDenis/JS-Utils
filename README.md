@@ -1,1 +1,4 @@
 # JS-Utils
+
+# License
+MIT
