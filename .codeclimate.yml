@@ -4,3 +4,4 @@ languages:
 exclude_paths:
 - "tests/*"
 - "karma.conf.js"
+- "package.json"

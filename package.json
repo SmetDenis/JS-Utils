@@ -1,6 +1,7 @@
 {
     "name": "jbzoo-utils",
     "description": "JBZoo JavaScript helpers",
+    "version": "1.0.0",
     "keywords": [
         "helpers"
     ],
@@ -12,9 +13,7 @@
     "main": "src/helper.js",
     "preferGlobal": true,
     "dependencies": {},
-    "private": true,
     "devDependencies": {
-        "grunt": "^0.4.5",
         "jasmine-core": "^2.3.4",
         "karma": "^0.13.15",
         "karma-cli": "^0.1.1",
