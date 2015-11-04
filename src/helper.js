@@ -17,6 +17,8 @@
  */
 (function (window, document, undefined) {
 
+    "use strict";
+
     window.JBZoo = {
 
         DEBUG: false,
@@ -31,7 +33,7 @@
          */
         numFormat: function (number, decimals, decPoint, thousandsSep) {
 
-            number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+            number = (number + "").replace(/[^0-9+\-Ee.]/g, '');
 
             var num        = !isFinite(+number) ? 0 : +number,
                 prec       = !isFinite(+decimals) ? 0 : Math.abs(decimals),
