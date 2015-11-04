@@ -20,7 +20,7 @@ module.exports = function (config) {
         exclude: [],
 
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress', 'coverage', 'coveralls'],
+        reporters: ['dots', 'coverage', 'coveralls'],
 
         // web server port
         port: 9876,
@@ -45,6 +45,11 @@ module.exports = function (config) {
         // source files, that you wanna generate coverage for do not include tests or libraries
         preprocessors: {
             'src/*.js': ['coverage']
+        },
+
+        coverageReporter: {
+            type: "lcov",
+            dir : "coverage/"
         }
 
     });
