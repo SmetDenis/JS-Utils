@@ -190,38 +190,41 @@
          * @returns {number}
          */
         round: function (value, precision, mode) {
-            var m, f, isHalf, sgn; // helper variables
+            // helper variables
+            var base, floorNum, isHalf, sign;
+
             // making sure precision is integer
             precision |= 0;
-            m = Math.pow(10, precision);
-            value *= m;
+            base = Math.pow(10, precision);
+            value *= base;
 
             // sign of the number
-            sgn    = (value > 0) | -(value < 0);
-            isHalf = value % 1 === 0.5 * sgn;
-            f      = Math.floor(value);
+            sign     = (value > 0) | -(value < 0);
+            isHalf   = value % 1 === 0.5 * sign;
+            floorNum = Math.floor(value);
 
             if (isHalf) {
+                mode = mode ? mode.toUpperCase() : 'DEFAULT';
                 switch (mode) {
-                    case 'ROUND_HALF_DOWN':
+                    case 'DOWN':
                         // rounds .5 toward zero
-                        value = f + (sgn < 0);
+                        value = floorNum + (sign < 0);
                         break;
-                    case 'ROUND_HALF_EVEN':
+                    case 'EVEN':
                         // rouds .5 towards the next even integer
-                        value = f + (f % 2 * sgn);
+                        value = floorNum + (floorNum % 2 * sign);
                         break;
-                    case 'ROUND_HALF_ODD':
+                    case 'ODD':
                         // rounds .5 towards the next odd integer
-                        value = f + !(f % 2);
+                        value = floorNum + !(floorNum % 2);
                         break;
                     default:
                         // rounds .5 away from zero
-                        value = f + (sgn > 0);
+                        value = floorNum + (sign > 0);
                 }
             }
 
-            return (isHalf ? value : Math.round(value)) / m;
+            return (isHalf ? value : Math.round(value)) / base;
         },
 
         /**
@@ -238,7 +241,7 @@
                 max = 2147483647;
 
             } else if (argc === 1) {
-                $this.error('Warning: rand() expects exactly 2 parameters, 1 given');
+                throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
 
             } else {
                 min = $this.toInt(min);
@@ -275,8 +278,6 @@
                 }
                 return retVal;
             }
-
-            return pieces;
         },
 
         /**
@@ -286,7 +287,7 @@
          * @param limit
          * @returns {*}
          */
-        explode: function explode(delimiter, string, limit) {
+        explode: function (delimiter, string, limit) {
 
             if (arguments.length < 2 || typeof delimiter === 'undefined' || typeof string === 'undefined') {
                 return null;
