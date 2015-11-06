@@ -17,14 +17,14 @@
  */
 (function (window, document, undefined) {
 
-    "use strict";
+    'use strict';
 
     window.JBZoo = {
 
         DEBUG: false,
 
         /**
-         * Discuss at: http://phpjs.org/functions/number_format/
+         * @link http://phpjs.org/functions/number_format/
          * @param number
          * @param decimals
          * @param decPoint
@@ -33,7 +33,7 @@
          */
         numFormat: function (number, decimals, decPoint, thousandsSep) {
 
-            number = ("" + number).replace(/[^0-9+\-Ee.]/g, '');
+            number = ('' + number).replace(/[^0-9+\-Ee.]/g, '');
 
             var num        = !isFinite(+number) ? 0 : +number,
                 prec       = !isFinite(+decimals) ? 0 : Math.abs(decimals),
@@ -61,17 +61,18 @@
          * @return {Boolean}
          */
         empty: function (mixedVar) {
-            var $this       = this, undef, i, len,
+            var $this       = this,
+                undefined, i, length,
                 emptyValues = [undefined, null, false, 0, '', '0'];
 
-            for (i = 0, len = emptyValues.length; i < len; i++) {
+            for (i = 0, length = emptyValues.length; i < length; i++) {
                 if (mixedVar === emptyValues[i]) {
                     return true;
                 }
             }
 
             if (typeof mixedVar === 'object') {
-                if ($this.countProps(mixedVar) === 0) {
+                if ($this.count(mixedVar) === 0) {
                     return true;
                 }
             }
@@ -80,22 +81,126 @@
         },
 
         /**
-         * Count own object properties
-         * @param object
-         * @returns {number}
+         * Check and get variable
+         *
+         * @returns {*}
          */
-        countProps: function (object) {
-            var count = 0;
-            for (var property in object) {
-                if (object.hasOwnProperty(property)) {
-                    count++;
+        get: function () {
+
+            var args = arguments,
+                argc = arguments.length;
+
+            if (argc === 1) {
+                if (args[0] === undefined || args[0] === null) {
+                    return undefined;
                 }
+
+                return args[0];
+
+            } else if (argc === 2) {
+
+                if (args[0] === undefined || args[0] === null) {
+                    return args[1];
+                }
+
+                return args[0];
+
+            } else if (argc === 3) {
+
+                if (args[0][args[1]] === undefined || args[0][args[1]] === null) {
+                    return args[2];
+                }
+
+                return args[0][args[1]];
             }
-            return count;
         },
 
         /**
-         * Check is value in array
+         * Check is variable function
+         *
+         * @param functionToCheck
+         * @returns {boolean}
+         */
+        isFunc: function (functionToCheck) {
+            return this.type(functionToCheck) === 'function';
+        },
+
+        /**
+         * Get variable type
+         *
+         * @param mixedVar
+         * @returns {*}
+         */
+        type: function (mixedVar) {
+
+            var types = ['Boolean', 'Number', 'String', 'Function', 'Array',
+                'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
+
+            var class2type = {};
+            for (var index in types) {
+                class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
+            }
+
+            if (mixedVar == null) {
+                return mixedVar + '';
+            }
+
+            // Support: Android<4.0 (functionish RegExp)
+            return typeof mixedVar === 'object' ||
+            typeof mixedVar === 'function' ? (class2type[toString.call(mixedVar)] || 'object') : typeof mixedVar;
+        },
+
+        /**
+         * Count all elements in an array, or something in an object
+         *
+         * @link http://php.net/manual/en/function.count.php
+         * @link http://phpjs.org/functions/count/
+         *
+         * @param variable
+         * @param isRecursive bool
+         * @returns {number}
+         */
+        count: function (variable, isRecursive) {
+
+            var $this = this, property, result = 0;
+
+            isRecursive = (typeof isRecursive !== 'undefined' && isRecursive) ? true : false;
+
+            if (variable === false ||
+                variable === null ||
+                typeof variable === 'undefined'
+            ) {
+                return 0;
+
+            } else if (variable.constructor !== Array && variable.constructor !== Object) {
+                return 1;
+            }
+
+            for (property in variable) {
+
+                if (variable.hasOwnProperty(property) && !$this.isFunc(variable[property])) {
+                    result++;
+
+                    if (isRecursive && variable[property] &&
+                        (
+                            variable[property].constructor === Array ||
+                            variable[property].constructor === Object
+                        )
+                    ) {
+                        result += this.count(variable[property], true);
+                    }
+                }
+            }
+
+            return result;
+        },
+
+        /**
+         * Finds whether a variable is a number or a numeric string
+         *
+         * @link http://php.net/manual/ru/function.in-array.php
+         * @link http://phpjs.org/functions/in_array/
+         *
          * @param needle
          * @param haystack
          * @param strict
@@ -118,7 +223,11 @@
         },
 
         /**
-         * Check is string numeric
+         * Finds whether a variable is a number or a numeric string
+         *
+         * @link http://php.net/manual/ru/function.is-numeric.php
+         * @link http://phpjs.org/functions/is_numeric/
+         *
          * @param mixed
          * @returns {boolean}
          */
@@ -128,19 +237,23 @@
 
         /**
          * Parse integer from string
-         * Discuss at: http://phpjs.org/functions/intval/
+         *
+         * @link http://phpjs.org/functions/intval/
+         *
          * @param mixed
          * @returns {Number}
          */
         toInt: function (mixed, base) {
             var type = typeof mixed;
 
+            base = base || 10;
+
             if (type === 'boolean') {
                 return +mixed;
 
             } else if (type === 'string') {
                 mixed   = mixed.replace(/\s/g, '');
-                var tmp = parseInt(mixed, base || 10);
+                var tmp = parseInt(mixed, base);
                 return (isNaN(tmp) || !isFinite(tmp)) ? 0 : tmp;
 
             } else if (type === 'number' && isFinite(mixed)) {
@@ -152,7 +265,10 @@
         },
 
         /**
-         * Discuss at: http://phpjs.org/functions/is_int/
+         * Check is variable integer
+         *
+         * @link http://phpjs.org/functions/is_int/
+         *
          * @param mixed
          * @returns {boolean}
          */
@@ -162,11 +278,12 @@
 
         /**
          * Parse integer from string
+         *
          * @param mixed
          * @returns {Number}
          */
         toFloat: function (mixed) {
-            //mixed = $.trim(mixed);
+
             var type = typeof mixed;
 
             if (type === 'boolean') {
@@ -177,13 +294,17 @@
             mixed = mixed.replace(/\s/g, '');
             mixed = mixed.replace(',', '.');
             mixed = (parseFloat(mixed) || 0);
-            mixed = this.round(mixed, 9); // hack for numbers like "0.30000000000000004"
+            mixed = this.round(mixed, 9); // hack for numbers like '0.30000000000000004'
 
             return mixed;
         },
 
         /**
-         * Discuss at: http://phpjs.org/functions/round/
+         * Rounds a float
+         *
+         * @link http://php.net/manual/en/function.round.php
+         * @link http://phpjs.org/functions/round/
+         *
          * @param value
          * @param precision
          * @param mode
@@ -228,6 +349,11 @@
         },
 
         /**
+         * Generate a random integer
+         *
+         * @link http://php.net/manual/en/function.rand.php
+         * @link http://phpjs.org/functions/rand/
+         *
          * @param min
          * @param max
          * @returns {*}
@@ -252,7 +378,11 @@
         },
 
         /**
-         * Discuss at: http://phpjs.org/functions/implode/
+         * Join array elements with a string
+         *
+         * @link http://php.net/manual/en/function.implode.php
+         * @link http://phpjs.org/functions/implode/
+         *
          * @param glue
          * @param pieces
          * @returns {*}
@@ -260,6 +390,7 @@
         implode: function (glue, pieces) {
 
             var i      = '',
+                $this  = this,
                 retVal = '',
                 tGlue  = '';
 
@@ -269,19 +400,25 @@
             }
 
             if (typeof pieces === 'object') {
-                if (Object.prototype.toString.call(pieces) === '[object Array]') {
+                if ($this.type(pieces) === 'array') {
                     return pieces.join(glue);
                 }
+
                 for (i in pieces) {
                     retVal += tGlue + pieces[i];
                     tGlue = glue;
                 }
+
                 return retVal;
             }
         },
 
         /**
-         * Discuss at: http://phpjs.org/functions/explode/
+         * Split a string by string
+         *
+         * @link http://phpjs.org/functions/explode/
+         * @link http://php.net/manual/en/function.explode.php
+         *
          * @param delimiter
          * @param string
          * @param limit
@@ -289,145 +426,86 @@
          */
         explode: function (delimiter, string, limit) {
 
-            if (arguments.length < 2 || typeof delimiter === 'undefined' || typeof string === 'undefined') {
+            if (arguments.length < 2 ||
+                typeof delimiter === 'undefined' ||
+                typeof string === 'undefined'
+            ) {
                 return null;
             }
 
-            if (delimiter === '' || delimiter === false || delimiter === null) {
+            if (delimiter === '' ||
+                delimiter === false ||
+                delimiter === null
+            ) {
                 return false;
             }
 
-            if (typeof delimiter === 'function'
-                || typeof delimiter === 'object'
-                || typeof string === 'function'
-                || typeof string === 'object'
-            ) {
-                return {0: ''};
+            if (delimiter === true) {
+                delimiter = '1';
             }
-
-            if (delimiter === true) delimiter = '1';
 
             // Here we go...
             delimiter += '';
             string += '';
 
-            var s = string.split(delimiter);
+            var splited = string.split(delimiter);
 
-            if (typeof limit === 'undefined') return s;
+            if (typeof limit === 'undefined') {
+                return splited;
+            }
 
             // Support for limit
-            if (limit === 0) limit = 1;
+            if (limit === 0) {
+                limit = 1;
+            }
 
             // Positive limit
             if (limit > 0) {
-                if (limit >= s.length) return s;
-                return s.slice(0, limit - 1)
-                    .concat([s.slice(limit - 1)
+                if (limit >= splited.length) return splited;
+                return splited.slice(0, limit - 1)
+                    .concat([splited.slice(limit - 1)
                         .join(delimiter)
                     ]);
             }
 
             // Negative limit
-            if (-limit >= s.length) return [];
+            if (-limit >= splited.length) return [];
 
-            s.splice(s.length + limit);
-            return s;
+            splited.splice(splited.length + limit);
+
+            return splited;
         },
 
         /**
-         * Discuss at: http://phpjs.org/functions/strip_tags/
+         * Strip HTML and PHP tags from a string
+         *
+         * @link http://php.net/manual/en/function.strip-tags.php
+         * @link http://phpjs.org/functions/strip_tags/
+         *
          * @param input
          * @param allowed
          * @returns {string}
          */
         stripTags: function (input, allowed) {
+
             allowed = (((allowed || '') + '')
                 .toLowerCase()
                 .match(/<[a-z][a-z0-9]*>/g) || [])
                 .join('');
 
             var tags               = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-                commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi,
-                result             = input
-                    .replace(commentsAndPhpTags, '')
-                    .replace(tags, function ($0, $1) {
-                        return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
-                    });
+                commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
 
-            //result = $.trim(result);
-
-            return result;
+            return input
+                .replace(commentsAndPhpTags, '')
+                .replace(tags, function ($0, $1) {
+                    return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+                });
         },
 
         /**
-         * Event logger to browser console
-         * @param type String
-         * @param message String
-         * @param vars mixed
-         */
-        logger: function (type, message, vars) {
-
-            var $this = this;
-
-            if (!$this.DEBUG || typeof console === 'undefined') {
-                return false;
-            }
-
-            var postfix = "\t\tvars:";
-
-            if (type === 'e') { // error
-                vars !== undefined ? console.error(message + postfix, vars) : console.error(message);
-
-            } else if (type === 'w') { // warning
-                vars !== undefined ? console.warn(message + postfix, vars) : console.warn(message);
-
-            } else if (type === 'i') { // information
-                vars !== undefined ? console.info(message + postfix, vars) : console.info(message);
-
-            } else if (type === 'l') { // log
-                vars !== undefined ? console.log(message + postfix, vars) : console.log(message);
-
-            } else {
-                vars !== undefined ? console.log(message + postfix, vars) : console.log(message);
-            }
-        },
-
-        /**
-         * Backtrace for debug
-         * Function may use dump function for show backtrace as string
-         * Work only if environment is "development"
-         * @param asString
-         */
-        trace: function (asString) {
-            var $this = this;
-
-            if (!$this.DEBUG || typeof console === 'undefined') {
-                return false;
-            }
-
-            if ($this.empty(asString)) {
-                asString = false;
-            }
-
-            var getStackTrace = function () {
-                var obj = {};
-                Error.captureStackTrace(obj, getStackTrace);
-                return obj.stack;
-            };
-
-            if (asString) {
-                $this.dump(getStackTrace(), 'trace', false);
-            } else {
-                if (typeof console != 'undefined') {
-                    console.trace();
-                }
-            }
-        },
-
-        /**
-         * Alias for console log + backtrace
-         * For debug only
-         * Work only if environment is "development"
+         * Alias for console log + backtrace. For debug only. Works only if environment is 'development' (DEBUG = true)
+         *
          * @param vars mixed
          * @param name String
          * @param showTrace Boolean
@@ -435,41 +513,46 @@
          */
         dump: function (vars, name, showTrace) {
 
-            // get type
-            if (typeof vars === 'string' || typeof vars === 'array') {
-                var type = ' (' + typeof(vars) + ', ' + vars.length + ')';
+            var $this = this;
+
+            if (!this.DEBUG) {
+                return false;
+            }
+
+            // Get type
+            var type    = '',
+                varType = $this.type(vars);
+
+            if (varType === 'string' || varType === 'array') {
+                type = ' (' + varType + ', ' + $this.count(vars) + ')';
             } else {
-                var type = ' (' + typeof(vars) + ')';
+                type = ' (' + varType + ')';
             }
 
-            // wrap in vars quote if string
-            if (typeof vars === 'string') {
-                vars = '"' + vars + '"';
+            // Wrap in vars quote if string
+            if (varType === 'string') {
+                vars = '\'' + vars + '\'';
             }
 
-            // get var name
-            if (typeof name === 'undefined') {
+            // Get var name
+            if (!name) {
                 name = '...' + type + ' = ';
             } else {
                 name += type + ' = ';
             }
 
-            // is show trace in console
-            if (typeof showTrace === 'undefined') {
-                showTrace = false;
-            }
-
-            // dump var
+            // Dump var
             if (window.parent && window.parent.console && window.parent.console.log) {
                 window.parent.console.log(name, vars);
             }
 
-            // show console
-            if (showTrace && typeof console.trace != 'undefined') {
+            // Show backtrace
+            if (showTrace && typeof console.trace !== 'undefined') {
                 console.trace();
+                return false;
             }
 
-            return true;
+            return false;
         }
     };
 
