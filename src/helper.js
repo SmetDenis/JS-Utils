@@ -72,8 +72,8 @@
          */
         empty: function (mixedVar) {
             var $this       = this,
-                undefined, i, length,
-                emptyValues = [undefined, null, false, 0, '', '0'];
+                emptyValues = [undefined, null, false, 0, '', '0'],
+                i, length;
 
             for (i = 0, length = emptyValues.length; i < length; i++) {
                 if (mixedVar === emptyValues[i]) {
