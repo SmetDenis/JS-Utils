@@ -19,6 +19,16 @@
 
     'use strict';
 
+    var class2type = {},
+        types      = ['Boolean', 'Number', 'String', 'Function', 'Array',
+            'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
+
+    (function() {
+        for (var index in types) {
+            class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
+        }
+    }());
+
     window.JBZoo = {
 
         DEBUG: false,
@@ -132,14 +142,6 @@
          * @returns {*}
          */
         type: function (mixedVar) {
-
-            var types = ['Boolean', 'Number', 'String', 'Function', 'Array',
-                'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
-
-            var class2type = {};
-            for (var index in types) {
-                class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
-            }
 
             if (mixedVar == null) {
                 return mixedVar + '';
