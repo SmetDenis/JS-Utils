@@ -30,7 +30,7 @@ module.exports = function (config) {
         colors: true,
 
         // Level of logging
-        // Possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        // Possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
         logLevel: config.LOG_INFO,
 
         // Start these browsers, currently available:
@@ -50,7 +50,7 @@ module.exports = function (config) {
 
         coverageReporter: {
             type: "lcov",
-            dir : "coverage/"
+            dir: "coverage/"
         }
 
     });

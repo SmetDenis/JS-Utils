@@ -1,5 +1,5 @@
 {
-    "maxErrors"                          : 5000,
+    "maxErrors"                          : -1,
     "validateLineBreaks"                 : "LF",
     "maximumLineLength"                  : 120,
     "excludeFiles"                       : [
