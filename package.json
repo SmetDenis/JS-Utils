@@ -22,11 +22,13 @@
         "karma-coveralls"          : "^1.1.2",
         "karma-jasmine"            : "^0.3.6",
         "karma-phantomjs-launcher" : "^0.2.1",
-        "jshint"                   : "^2.8.0"
+        "jshint"                   : "^2.8.0",
+        "jscs"                     : "^2.5.1"
     },
     "scripts"              : {
         "test"   : "./node_modules/.bin/karma start --single-run --browsers PhantomJS",
-        "jshint" : "./node_modules/.bin/jshint src"
+        "jshint" : "./node_modules/.bin/jshint src",
+        "jscs"   : "./node_modules/.bin/jscs src"
     },
     "optionalDependencies" : {},
     "engines"              : {

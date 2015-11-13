@@ -1,0 +1,26 @@
+{
+    "maxErrors"                          : 5000,
+    "validateLineBreaks"                 : "LF",
+    "excludeFiles"                       : [
+        "coverage",
+        "node_modules/**",
+        "tests"
+    ],
+    "disallowSpacesInsideParentheses"    : true,
+    "validateIndentation"                : 4,
+    "validateQuoteMarks"                 : {"mark" : "\"", "escape" : true},
+    "requireSpacesInFunctionDeclaration" : {
+        "beforeOpeningRoundBrace" : true
+    },
+    "disallowSpacesInFunction"           : false,
+    "requireMultipleVarDecl"             : true,
+    "disallowMultipleVarDecl"            : false,
+    "maximumLineLength"                  : 120,
+    "requireTrailingComma"               : false,
+    "requireSpaceAfterKeywords"          : [
+        "if", "else", "for", "while", "do", "switch", "return", "try", "catch"
+    ],
+    "requireCurlyBraces"                 : [
+        "if", "else", "for", "while", "do", "try", "catch"
+    ]
+}
