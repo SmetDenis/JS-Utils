@@ -4,5 +4,5 @@ node_js:
   - "0.12"
 
 script:
-  - npm test
-  - npm jshint
+  - npm run test
+  - npm run jshint
