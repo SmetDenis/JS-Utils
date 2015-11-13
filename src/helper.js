@@ -19,17 +19,9 @@
 
     'use strict';
 
-    var class2type = {},
-        types      = ['Boolean', 'Number', 'String', 'Function', 'Array',
-            'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
+    var class2type; // static
 
-    (function() {
-        for (var index in types) {
-            class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
-        }
-    }());
-
-    window.JBZoo = {
+    var $this = window.JBZoo = {
 
         DEBUG: false,
 
@@ -71,8 +63,7 @@
          * @return {Boolean}
          */
         empty: function (mixedVar) {
-            var $this       = this,
-                emptyValues = [undefined, null, false, 0, '', '0'],
+            var emptyValues = [undefined, null, false, 0, '', '0'],
                 i, length;
 
             for (i = 0, length = emptyValues.length; i < length; i++) {
@@ -88,6 +79,60 @@
             }
 
             return false;
+        },
+
+        /**
+         * @param objectVar
+         * @returns {boolean}
+         */
+        isWindow: function (objectVar) {
+            return !this.empty(objectVar) && objectVar === objectVar.window;
+        },
+
+        /**
+         * @param obj
+         * @param callback
+         * @returns {*}
+         */
+        each: function (obj, callback) {
+            var length, i = 0;
+
+            function isArrayLike(obj) {
+
+                // Support: iOS 8.2 (not reproducible in simulator)
+                // `in` check used to prevent JIT error (gh-2145)
+                // hasOwn isn't used here due to false negatives
+                // regarding Nodelist length in IE
+                var length = !!obj && 'length' in obj && obj.length,
+                    type   = $this.type(obj);
+
+                if (type === 'function' || $this.isWindow(obj)) {
+                    return false;
+                }
+
+                return type === 'array' ||
+                    length === 0 ||
+                    typeof length === 'number' &&
+                    length > 0 &&
+                    ( length - 1 ) in obj;
+            }
+
+            if (isArrayLike(obj)) {
+                length = obj.length;
+                for (; i < length; i++) {
+                    if (callback.call(obj[i], i, obj[i]) === false) {
+                        break;
+                    }
+                }
+            } else {
+                for (i in obj) {
+                    if (callback.call(obj[i], i, obj[i]) === false) {
+                        break;
+                    }
+                }
+            }
+
+            return obj;
         },
 
         /**
@@ -115,7 +160,7 @@
 
                 return args[0];
 
-            } else if (argc === 3) {
+            } else {
 
                 if (args[0][args[1]] === undefined || args[0][args[1]] === null) {
                     return args[2];
@@ -143,7 +188,18 @@
          */
         type: function (mixedVar) {
 
-            if (mixedVar == null) {
+            var toString = Object.prototype.toString,
+                types    = ['Boolean', 'Number', 'String', 'Function', 'Array',
+                    'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
+
+            if (!class2type) {
+                class2type = {};
+                $this.each(types, function (index) {
+                    class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
+                });
+            }
+
+            if (mixedVar === null) {
                 return mixedVar + '';
             }
 
@@ -164,7 +220,7 @@
          */
         count: function (variable, isRecursive) {
 
-            var $this = this, property, result = 0;
+            var property, result = 0;
 
             isRecursive = (typeof isRecursive !== 'undefined' && isRecursive) ? true : false;
 
@@ -210,16 +266,18 @@
          */
         inArray: function (needle, haystack, strict) {
 
-            var found = false, key;
+            var found = false;
 
             strict = !!strict;
 
-            for (key in haystack) {
+            $this.each(haystack, function (key) {
+                /* jshint -W116 */
                 if ((strict && haystack[key] === needle) || (!strict && haystack[key] == needle)) {
                     found = true;
-                    break;
+                    return false;
                 }
-            }
+                /* jshint +W116 */
+            });
 
             return found;
         },
@@ -243,6 +301,7 @@
          * @link http://phpjs.org/functions/intval/
          *
          * @param mixed
+         * @param base
          * @returns {Number}
          */
         toInt: function (mixed, base) {
@@ -259,7 +318,9 @@
                 return (isNaN(tmp) || !isFinite(tmp)) ? 0 : tmp;
 
             } else if (type === 'number' && isFinite(mixed)) {
+                /* jshint -W016 */
                 return mixed | 0;
+                /* jshint +W016 */
 
             } else {
                 return 0;
@@ -275,7 +336,9 @@
          * @returns {boolean}
          */
         isInt: function (mixed) {
+            /* jshint -W018 */
             return mixed === +mixed && isFinite(mixed) && !(mixed % 1);
+            /* jshint +W018 */
         },
 
         /**
@@ -314,6 +377,8 @@
          */
         round: function (value, precision, mode) {
             // helper variables
+            /* jshint -W016 */
+            /* jshint -W018 */
             var base, floorNum, isHalf, sign;
 
             // making sure precision is integer
@@ -348,6 +413,8 @@
             }
 
             return (isHalf ? value : Math.round(value)) / base;
+            /* jshint +W016 */
+            /* jshint +W018 */
         },
 
         /**
@@ -361,8 +428,7 @@
          * @returns {*}
          */
         rand: function (min, max) {
-            var $this = this,
-                argc  = arguments.length;
+            var argc = arguments.length;
 
             if (argc === 0) {
                 min = 0;
@@ -391,9 +457,7 @@
          */
         implode: function (glue, pieces) {
 
-            var i      = '',
-                $this  = this,
-                retVal = '',
+            var retVal = '',
                 tGlue  = '';
 
             if (arguments.length === 1) {
@@ -406,10 +470,10 @@
                     return pieces.join(glue);
                 }
 
-                for (i in pieces) {
+                $this.each(pieces, function (i) {
                     retVal += tGlue + pieces[i];
                     tGlue = glue;
-                }
+                });
 
                 return retVal;
             }
@@ -463,7 +527,10 @@
 
             // Positive limit
             if (limit > 0) {
-                if (limit >= splited.length) return splited;
+                if (limit >= splited.length) {
+                    return splited;
+                }
+
                 return splited.slice(0, limit - 1)
                     .concat([splited.slice(limit - 1)
                         .join(delimiter)
@@ -471,7 +538,9 @@
             }
 
             // Negative limit
-            if (-limit >= splited.length) return [];
+            if (-limit >= splited.length) {
+                return [];
+            }
 
             splited.splice(splited.length + limit);
 
@@ -515,7 +584,7 @@
          */
         dump: function (vars, name, showTrace) {
 
-            var $this = this;
+            var cns = window.parent && window.parent.console && window.parent.console;
 
             if (!this.DEBUG) {
                 return false;
@@ -544,13 +613,13 @@
             }
 
             // Dump var
-            if (window.parent && window.parent.console && window.parent.console.log) {
-                window.parent.console.log(name, vars);
+            if (cns.log) {
+                cns.log(name, vars);
             }
 
             // Show backtrace
-            if (showTrace && typeof console.trace !== 'undefined') {
-                console.trace();
+            if (showTrace && cns.trace !== 'undefined') {
+                cns.trace();
                 return false;
             }
 
