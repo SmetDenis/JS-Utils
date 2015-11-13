@@ -1,33 +1,77 @@
 {
-    "maxErrors"                          : -1,
-    "validateLineBreaks"                 : "LF",
-    "maximumLineLength"                  : 120,
-    "excludeFiles"                       : [
+    "maxErrors"                                  : -1,
+    "validateIndentation"                        : 4,
+    "validateLineBreaks"                         : "LF",
+    "validateQuoteMarks"                         : {
+        "mark"   : "\"",
+        "escape" : true
+    },
+    "maximumLineLength"                          : {
+        "value"     : 120,
+        "allExcept" : ["urlComments"]
+    },
+    "excludeFiles"                               : [
         "coverage/**",
         "node_modules/**",
         "tests/**"
     ],
-    "disallowSpacesInsideParentheses"    : true,
-    "validateIndentation"                : 4,
-    "validateQuoteMarks"                 : {"mark" : "\"", "escape" : true},
 
-    "requireSpacesInFunctionDeclaration" : {
+    "requireCurlyBraces"                         : ["if", "else", "for", "while", "do", "try", "catch"],
+    "requireSpaceAfterKeywords"                  : ["if", "else", "for", "while", "do", "switch", "return", "catch"],
+    "disallowKeywords"                           : ["with"],
+    "disallowKeywordsOnNewLine"                  : ["else", "catch"],
+
+    "disallowSpaceAfterPrefixUnaryOperators"     : true,
+    "disallowSpaceBeforePostfixUnaryOperators"   : ["++", "--"],
+    "requireSpaceBeforeBinaryOperators"          : true,
+    "requireSpaceAfterBinaryOperators"           : true,
+
+    "requireMultipleVarDecl"                     : true,
+
+    "disallowSpacesInsideParentheses"            : true,
+    "disallowEmptyBlocks"                        : true,
+    "disallowTrailingComma"                      : true,
+
+    "requireParenthesesAroundIIFE"               : true,
+    "requireSpaceBetweenArguments"               : true,
+    "requireSpacesInFunctionDeclaration"         : {
+        "beforeOpeningCurlyBrace" : true
+    },
+    "disallowSpacesInFunctionDeclaration"        : {
         "beforeOpeningRoundBrace" : true
     },
-    "disallowSpacesInFunction"           : false,
+    "requireSpacesInAnonymousFunctionExpression" : {
+        "beforeOpeningRoundBrace" : true,
+        "beforeOpeningCurlyBrace" : true
+    },
+    "disallowSpacesInNamedFunctionExpression"    : {
+        "beforeOpeningRoundBrace" : true
+    },
+    "requireSpacesInNamedFunctionExpression"     : {
+        "beforeOpeningCurlyBrace" : true
+    },
 
-    "requireMultipleVarDecl"             : true,
+    "requireSpacesInConditionalExpression"       : {
+        "afterTest"        : true,
+        "beforeConsequent" : true,
+        "afterConsequent"  : true,
+        "beforeAlternate"  : true
+    },
 
-    "disallowQuotedKeysInObjects"        : "allButReserved",
+    "disallowSpaceBeforeBinaryOperators"         : [","],
+    "requireCommaBeforeLineBreak"                : true,
 
-    "disallowMultipleVarDecl"            : false,
-
-    "requireTrailingComma"               : false,
-
-    "requireSpaceAfterKeywords"          : [
-        "if", "else", "for", "while", "do", "switch", "return", "try", "catch"
-    ],
-    "requireCurlyBraces"                 : [
-        "if", "else", "for", "while", "do", "try", "catch"
-    ]
+    "disallowMultipleLineStrings"                : true,
+    "disallowYodaConditions"                     : true,
+    "disallowSpacesInsideArrayBrackets"          : true,
+    "requireDotNotation"                         : true,
+    "disallowSpaceAfterObjectKeys"               : true,
+    "disallowSpacesInsideObjectBrackets"         : true,
+    "disallowQuotedKeysInObjects"                : "allButReserved",
+    "requireSpaceAfterLineComment"               : true,
+    "requireLineFeedAtFileEnd"                   : true,
+    "disallowMultipleLineBreaks"                 : true,
+    "disallowMixedSpacesAndTabs"                 : true,
+    "disallowTrailingWhitespace"                 : true,
+    "requireSemicolons"                          : true
 }

@@ -26,6 +26,7 @@
         class2type: false,
 
         /**
+         * Format a number with grouped thousands
          * @link http://phpjs.org/functions/number_format/
          *
          * @param number
