@@ -47,7 +47,7 @@
                 "prop5": true,
                 "prop6": undefined,
                 "prop7": null,
-                'func' : function () {
+                "func" : function () {
                     return true;
                 }
             })).toEqual(7);

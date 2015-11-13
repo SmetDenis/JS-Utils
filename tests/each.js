@@ -28,13 +28,13 @@
                 seen[k] = v;
             });
 
-            expect(seen).toEqual({"0": 3, "1": 4, "2": 5});
+            expect(seen).toEqual({0: 3, 1: 4, 2: 5});
 
             seen = {};
-            helper.each({name: 'name', lang: 'lang'}, function (k, v) {
+            helper.each({"name": "name", "lang": "lang"}, function (k, v) {
                 seen[k] = v;
             });
-            expect(seen).toEqual({name: 'name', lang: 'lang'});
+            expect(seen).toEqual({"name": "name", "lang": "lang"});
 
 
             seen = [];
@@ -54,12 +54,12 @@
             expect(seen).toEqual([1]);
 
             seen = {
-                Zero: function () {
+                "Zero": function () {
                 },
-                One : function (a) {
+                "One": function (a) {
                     a = a;
                 },
-                Two : function (a, b) {
+                "Two": function (a, b) {
                     a = a;
                     b = b;
                 }
@@ -76,29 +76,29 @@
             }
 
             seen     = {
-                "undefined"      : undefined,
-                "null"           : null,
-                "false"          : false,
-                "true"           : true,
-                "empty string"   : "",
+                "undefined": undefined,
+                "null": null,
+                "false": false,
+                "true": true,
+                "empty string": "",
                 "nonempty string": "string",
-                "string \"0\""   : "0",
-                "negative"       : -1,
-                "excess"         : 1
+                "string \"0\"": "0",
+                "negative": -1,
+                "excess": 1
             };
             callback = function (k) {
                 expect(k).toBe("length");
             };
             for (i in seen) {
                 label = i;
-                helper.each({length: seen[i]}, callback);
+                helper.each({"length": seen[i]}, callback);
             }
 
             seen     = {
-                "sparse Array"          : Array(4),
-                "length: 1 plain object": {length: 1, "0": true},
-                "length: 2 plain object": {length: 2, "0": true, "1": true},
-                NodeList                : document.getElementsByTagName("html")
+                "sparse Array": Array(4),
+                "length: 1 plain object": {"length": 1, 0: true},
+                "length: 2 plain object": {"length": 2, 0: true, 1: true},
+                "NodeList": document.getElementsByTagName("html")
             };
             callback = function (k) {
                 if (seen[label]) {
@@ -113,7 +113,7 @@
             }
 
             seen = false;
-            helper.each({length: 0}, function () {
+            helper.each({"length": 0}, function () {
                 seen = true;
             });
             expect(!seen).toBeTruthy();
@@ -122,7 +122,7 @@
             helper.each(document.getElementsByTagName("asdf"), function () {
                 seen = true;
             });
-            expect(!seen).toBeTruthy()
+            expect(!seen).toBeTruthy();
 
             i = 0;
             helper.each(document.styleSheets, function () {

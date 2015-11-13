@@ -20,18 +20,18 @@
     describe("Dump", function () {
         it("dump", function () {
 
-            helper.dump('NO');
+            helper.dump("NO");
             helper.DEBUG = true;
-            helper.dump('YES');
+            helper.dump("YES");
             helper.DEBUG = false;
-            helper.dump('NO');
+            helper.dump("NO");
             helper.DEBUG = true;
 
             helper.dump(true);
-            helper.dump('string');
-            helper.dump('string', 'label');
-            helper.dump('string', 'label', true);
-            helper.dump('string', 'label', false);
+            helper.dump("string");
+            helper.dump("string", "label");
+            helper.dump("string", "label", true);
+            helper.dump("string", "label", false);
             helper.dump([]);
             helper.dump([1, 2, 3]);
 

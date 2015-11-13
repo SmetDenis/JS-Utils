@@ -15,7 +15,7 @@
 /**
  * JBZoo Helper with custom js functions
  */
-(function(window, document, undefined) {
+(function (window, document, undefined) {
 
     "use strict";
 
@@ -27,6 +27,7 @@
 
         /**
          * @link http://phpjs.org/functions/number_format/
+         *
          * @param number
          * @param decimals
          * @param decPoint
@@ -59,6 +60,7 @@
         /**
          * Check is variable empty
          * @link http://phpjs.org/functions/empty:392
+         *
          * @param mixedVar
          * @return {Boolean}
          */
