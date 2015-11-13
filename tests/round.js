@@ -39,21 +39,21 @@
         });
 
         it("down", function () {
-            expect(helper.round(123.4, 0, 'down')).toBe(123);
-            expect(helper.round(123.5, 0, 'down')).toBe(123);
-            expect(helper.round(123.6, 0, 'down')).toBe(124);
+            expect(helper.round(123.4, 0, "down")).toBe(123);
+            expect(helper.round(123.5, 0, "down")).toBe(123);
+            expect(helper.round(123.6, 0, "down")).toBe(124);
         });
 
         it("even", function () {
-            expect(helper.round(123.4, 0, 'even')).toBe(123);
-            expect(helper.round(123.5, 0, 'even')).toBe(124);
-            expect(helper.round(123.6, 0, 'even')).toBe(124);
+            expect(helper.round(123.4, 0, "even")).toBe(123);
+            expect(helper.round(123.5, 0, "even")).toBe(124);
+            expect(helper.round(123.6, 0, "even")).toBe(124);
         });
 
         it("odd", function () {
-            expect(helper.round(123.4, 0, 'Odd')).toBe(123);
-            expect(helper.round(123.5, 0, 'ODD')).toBe(123);
-            expect(helper.round(123.6, 0, 'odd')).toBe(124);
+            expect(helper.round(123.4, 0, "Odd")).toBe(123);
+            expect(helper.round(123.5, 0, "ODD")).toBe(123);
+            expect(helper.round(123.6, 0, "odd")).toBe(124);
         });
     });
 

@@ -19,9 +19,9 @@
 
     describe("Implode", function () {
         it("implode", function () {
-            expect(helper.implode(' ', ['Kevin', 'van', 'Zonneveld'])).toBe('Kevin van Zonneveld');
-            expect(helper.implode(' ', {first: 'Kevin', last: 'van Zonneveld'})).toBe('Kevin van Zonneveld');
-            expect(helper.implode({first: 'Kevin', last: 'van Zonneveld'})).toBe('Kevinvan Zonneveld');
+            expect(helper.implode(" ", ["Kevin", "van", "Zonneveld"])).toBe("Kevin van Zonneveld");
+            expect(helper.implode(" ", {first: "Kevin", last: "van Zonneveld"})).toBe("Kevin van Zonneveld");
+            expect(helper.implode({first: "Kevin", last: "van Zonneveld"})).toBe("Kevinvan Zonneveld");
         });
     });
 

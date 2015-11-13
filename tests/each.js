@@ -31,10 +31,10 @@
             expect(seen).toEqual({0: 3, 1: 4, 2: 5});
 
             seen = {};
-            helper.each({"name": "name", "lang": "lang"}, function (k, v) {
+            helper.each({name: "name", lang: "lang"}, function (k, v) {
                 seen[k] = v;
             });
-            expect(seen).toEqual({"name": "name", "lang": "lang"});
+            expect(seen).toEqual({name: "name", lang: "lang"});
 
 
             seen = [];
@@ -47,19 +47,19 @@
             expect(seen).toEqual([1, 2]);
 
             seen = [];
-            helper.each({"a": 1, "b": 2, "c": 3}, function (k, v) {
+            helper.each({a: 1, b: 2, c: 3}, function (k, v) {
                 seen.push(v);
                 return false;
             });
             expect(seen).toEqual([1]);
 
             seen = {
-                "Zero": function () {
+                Zero: function () {
                 },
-                "One": function (a) {
+                One: function (a) {
                     a = a;
                 },
-                "Two": function (a, b) {
+                Two: function (a, b) {
                     a = a;
                     b = b;
                 }
@@ -91,15 +91,16 @@
             };
             for (i in seen) {
                 label = i;
-                helper.each({"length": seen[i]}, callback);
+                helper.each({length: seen[i]}, callback);
             }
 
             seen     = {
-                "sparse Array": Array(4),
-                "length: 1 plain object": {"length": 1, 0: true},
-                "length: 2 plain object": {"length": 2, 0: true, 1: true},
-                "NodeList": document.getElementsByTagName("html")
+                "sparse Array": new Array(4),
+                "length: 1 plain object": {length: 1, 0: true},
+                "length: 2 plain object": {length: 2, 0: true, 1: true},
+                NodeList: document.getElementsByTagName("html")
             };
+
             callback = function (k) {
                 if (seen[label]) {
                     delete seen[label];
@@ -107,13 +108,14 @@
                     return false;
                 }
             };
+
             for (i in seen) {
                 label = i;
                 helper.each(seen[i], callback);
             }
 
             seen = false;
-            helper.each({"length": 0}, function () {
+            helper.each({length: 0}, function () {
                 seen = true;
             });
             expect(!seen).toBeTruthy();

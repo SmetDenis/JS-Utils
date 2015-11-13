@@ -65,6 +65,7 @@
          * @return {Boolean}
          */
         empty: function (mixedVar) {
+
             var emptyValues = [undefined, null, false, 0, "", "0"],
                 i, length;
 
@@ -381,9 +382,10 @@
          * @returns {number}
          */
         round: function (value, precision, mode) {
-            // Helper variables
             /* jshint -W016 */
             /* jshint -W018 */
+
+            // Helper variables
             var base, floorNum, isHalf, sign;
 
             // Making sure precision is integer
@@ -589,7 +591,7 @@
          */
         dump: function (vars, name, showTrace) {
 
-            var cns = window.parent && window.parent.console && window.parent.console;
+            var console = window.parent && window.parent.console && window.parent.console;
 
             if (!this.DEBUG) {
                 return false;
@@ -618,13 +620,13 @@
             }
 
             // Dump var
-            if (cns.log) {
-                cns.log(name, vars);
+            if (console.log) {
+                console.log(name, vars);
             }
 
             // Show backtrace
-            if (showTrace && cns.trace !== "undefined") {
-                cns.trace();
+            if (showTrace && console.trace !== "undefined") {
+                console.trace();
                 return false;
             }
 

@@ -22,13 +22,13 @@
 
             expect(helper.empty(null)).toBeTruthy();
             expect(helper.empty(undefined)).toBeTruthy();
-            expect(helper.empty('')).toBeTruthy();
+            expect(helper.empty("")).toBeTruthy();
             expect(helper.empty(0)).toBeTruthy();
-            expect(helper.empty('0')).toBeTruthy();
+            expect(helper.empty("0")).toBeTruthy();
             expect(helper.empty([])).toBeTruthy();
             expect(helper.empty({})).toBeTruthy();
             expect(helper.empty({
-                'func': function () {
+                "func": function () {
                     return true;
                 }
             })).toBeTruthy();
@@ -37,19 +37,19 @@
 
         it("false", function () {
 
-            expect(helper.empty(' ')).toBeFalsy();
-            expect(helper.empty('1')).toBeFalsy();
+            expect(helper.empty(" ")).toBeFalsy();
+            expect(helper.empty("1")).toBeFalsy();
             expect(helper.empty(1)).toBeFalsy();
-            expect(helper.empty('string')).toBeFalsy();
+            expect(helper.empty("string")).toBeFalsy();
             expect(helper.empty(true)).toBeFalsy();
 
             expect(helper.empty({
-                'prop': true,
+                "prop": true
             })).toBeFalsy();
 
             expect(helper.empty({
-                'prop': false,
-                'func': function () {
+                "prop": false,
+                "func": function () {
                     return true;
                 }
             })).toBeFalsy();

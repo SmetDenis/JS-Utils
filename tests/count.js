@@ -27,7 +27,7 @@
         });
 
         it("simple", function () {
-            expect(helper.count('string')).toEqual(1);
+            expect(helper.count("string")).toEqual(1);
             expect(helper.count(true)).toEqual(1);
         });
 
