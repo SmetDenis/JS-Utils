@@ -27,7 +27,7 @@
         });
 
         it("simple", function () {
-            expect(helper.count('string')).toEqual(1);
+            expect(helper.count("string")).toEqual(1);
             expect(helper.count(true)).toEqual(1);
         });
 
@@ -47,7 +47,7 @@
                 "prop5": true,
                 "prop6": undefined,
                 "prop7": null,
-                'func' : function () {
+                "func" : function () {
                     return true;
                 }
             })).toEqual(7);

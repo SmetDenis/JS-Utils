@@ -22,7 +22,7 @@
         it("empty", function () {
             expect(helper.type(null)).toEqual("null");
 
-            expect(helper.type()).toEqual('undefined');
+            expect(helper.type()).toEqual("undefined");
             expect(helper.type(undefined)).toEqual("undefined");
 
             expect(helper.type(true)).toEqual("boolean");

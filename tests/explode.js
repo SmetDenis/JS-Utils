@@ -20,26 +20,26 @@
     describe("Explode", function () {
         it("explode", function () {
 
-            expect(helper.explode('', 'qw er ty')).toBeFalsy();
-            expect(helper.explode('')).toBeFalsy();
+            expect(helper.explode("", "qw er ty")).toBeFalsy();
+            expect(helper.explode("")).toBeFalsy();
             expect(helper.explode(null)).toBeFalsy();
             expect(helper.explode(undefined)).toBeFalsy();
             expect(helper.explode(false)).toBeFalsy();
-            expect(helper.explode('qw er ty')).toBeFalsy();
+            expect(helper.explode("qw er ty")).toBeFalsy();
 
-            expect(helper.explode(' ', 'qw er ty')).toEqual(['qw', 'er', 'ty']);
-            expect(helper.explode(' ', 'qw er ty', -4)).toEqual([]);
-            expect(helper.explode(' ', 'qw er ty', -3)).toEqual([]);
-            expect(helper.explode(' ', 'qw er ty', -2)).toEqual(['qw']);
-            expect(helper.explode(' ', 'qw er ty', -1)).toEqual(['qw', 'er']);
-            expect(helper.explode(' ', 'qw er ty', 0)).toEqual(['qw er ty']);
-            expect(helper.explode(' ', 'qw er ty', 1)).toEqual(['qw er ty']);
-            expect(helper.explode(' ', 'qw er ty', 2)).toEqual(['qw', 'er ty']);
-            expect(helper.explode(' ', 'qw er ty', 3)).toEqual(['qw', 'er', 'ty']);
-            expect(helper.explode(' ', 'qw er ty', 4)).toEqual(['qw', 'er', 'ty']);
+            expect(helper.explode(" ", "qw er ty")).toEqual(["qw", "er", "ty"]);
+            expect(helper.explode(" ", "qw er ty", -4)).toEqual([]);
+            expect(helper.explode(" ", "qw er ty", -3)).toEqual([]);
+            expect(helper.explode(" ", "qw er ty", -2)).toEqual(["qw"]);
+            expect(helper.explode(" ", "qw er ty", -1)).toEqual(["qw", "er"]);
+            expect(helper.explode(" ", "qw er ty", 0)).toEqual(["qw er ty"]);
+            expect(helper.explode(" ", "qw er ty", 1)).toEqual(["qw er ty"]);
+            expect(helper.explode(" ", "qw er ty", 2)).toEqual(["qw", "er ty"]);
+            expect(helper.explode(" ", "qw er ty", 3)).toEqual(["qw", "er", "ty"]);
+            expect(helper.explode(" ", "qw er ty", 4)).toEqual(["qw", "er", "ty"]);
 
-            expect(helper.explode(' ', ' qw  er  ty ')).toEqual(['', 'qw', '', 'er', '', 'ty', '']);
-            expect(helper.explode(true, 'qw1er1ty')).toEqual(['qw', 'er', 'ty']);
+            expect(helper.explode(" ", " qw  er  ty ")).toEqual(["", "qw", "", "er", "", "ty", ""]);
+            expect(helper.explode(true, "qw1er1ty")).toEqual(["qw", "er", "ty"]);
         });
     });
 

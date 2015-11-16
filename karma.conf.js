@@ -13,15 +13,15 @@ module.exports = function (config) {
 
         /* List of files / patterns to load in the browser */
         files: [
-            'src/*.js',
-            'tests/*.js'
+            "src/*.js",
+            "tests/*.js"
         ],
 
         // List of files to exclude
         exclude: [],
 
-        // Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ["dots", 'coverage', 'coveralls'],
+        // Possible values: "dots", "progress", "junit", "growl", "coverage"
+        reporters: ["dots", "coverage", "coveralls"],
 
         // Web server port
         port: 9876,
@@ -30,11 +30,11 @@ module.exports = function (config) {
         colors: true,
 
         // Level of logging
-        // Possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        // Possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
         logLevel: config.LOG_INFO,
 
         // Start these browsers, currently available:
-        browsers: ['PhantomJS'],
+        browsers: ["PhantomJS"],
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 10000,
@@ -45,12 +45,12 @@ module.exports = function (config) {
 
         // Source files, that you wanna generate coverage for do not include tests or libraries
         preprocessors: {
-            'src/*.js': ['coverage']
+            "src/*.js": ["coverage"]
         },
 
         coverageReporter: {
             type: "lcov",
-            dir : "coverage/"
+            dir: "coverage/"
         }
 
     });

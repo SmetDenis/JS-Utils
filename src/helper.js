@@ -17,27 +17,18 @@
  */
 (function (window, document, undefined) {
 
-    'use strict';
+    "use strict";
 
-    var class2type = {},
-        types      = ['Boolean', 'Number', 'String', 'Function', 'Array',
-            'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
-
-    (function () {
-        var index;
-        if (types) {
-            for (index in types) {
-                class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
-            }
-        }
-    }());
-
-    window.JBZoo = {
+    var $this = window.JBZoo = {
 
         DEBUG: false,
 
+        class2type: false,
+
         /**
+         * Format a number with grouped thousands
          * @link http://phpjs.org/functions/number_format/
+         *
          * @param number
          * @param decimals
          * @param decPoint
@@ -46,19 +37,19 @@
          */
         numFormat: function (number, decimals, decPoint, thousandsSep) {
 
-            number = ('' + number).replace(/[^0-9+\-Ee.]/g, '');
+            number = ("" + number).replace(/[^0-9+\-Ee.]/g, "");
 
             var num        = !isFinite(+number) ? 0 : +number,
                 prec       = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                separator  = (typeof thousandsSep === 'undefined') ? ',' : thousandsSep,
-                decimal    = (typeof decPoint === 'undefined') ? '.' : decPoint,
+                separator  = thousandsSep === undefined ? "," : thousandsSep,
+                decimal    = decPoint === undefined ? "." : decPoint,
                 toFixedFix = function (n, prec) {
                     var k = Math.pow(10, prec);
-                    return '' + (Math.round(n * k) / k).toFixed(prec);
-                };
+                    return "" + (Math.round(n * k) / k).toFixed(prec);
+                },
 
-            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-            var result = (prec ? toFixedFix(num, prec) : '' + Math.round(num)).split('.');
+                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+                result     = (prec ? toFixedFix(num, prec) : "" + Math.round(num)).split(".");
 
             if (result[0].length > 3) {
                 result[0] = result[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, separator);
@@ -70,12 +61,13 @@
         /**
          * Check is variable empty
          * @link http://phpjs.org/functions/empty:392
+         *
          * @param mixedVar
          * @return {Boolean}
          */
         empty: function (mixedVar) {
-            var $this       = this,
-                emptyValues = [undefined, null, false, 0, '', '0'],
+
+            var emptyValues = [undefined, null, false, 0, "", "0"],
                 i, length;
 
             for (i = 0, length = emptyValues.length; i < length; i++) {
@@ -84,7 +76,7 @@
                 }
             }
 
-            if (typeof mixedVar === 'object') {
+            if (typeof mixedVar === "object") {
                 if ($this.count(mixedVar) === 0) {
                     return true;
                 }
@@ -94,11 +86,34 @@
         },
 
         /**
+         * @param objectVar
+         * @returns {boolean}
+         */
+        isWindow: function (objectVar) {
+            return !this.empty(objectVar) && objectVar === objectVar.window;
+        },
+
+        /**
+         * Support: iOS 8.2 (not reproducible in simulator) `in` check used to prevent JIT error (gh-2145)
+         * hasOwn isn"t used here due to false negatives regarding Nodelist length in IE
+         *
          * @param obj
          * @returns {boolean}
          */
-        isWindow: function (obj) {
-            return obj != null && obj === obj.window;
+        isArrayLike: function (obj) {
+
+            var length = !!obj && "length" in obj && obj.length,
+                type   = $this.type(obj);
+
+            if (type === "function" || $this.isWindow(obj)) {
+                return false;
+            }
+
+            return type === "array" ||
+                length === 0 ||
+                typeof length === "number" &&
+                length > 0 &&
+                (length - 1) in obj;
         },
 
         /**
@@ -107,29 +122,9 @@
          * @returns {*}
          */
         each: function (obj, callback) {
-            var length, i = 0, $this = this;
+            var length, i = 0;
 
-            function isArrayLike(obj) {
-
-                // Support: iOS 8.2 (not reproducible in simulator)
-                // `in` check used to prevent JIT error (gh-2145)
-                // hasOwn isn't used here due to false negatives
-                // regarding Nodelist length in IE
-                var length = !!obj && 'length' in obj && obj.length,
-                    type   = $this.type(obj);
-
-                if (type === 'function' || $this.isWindow(obj)) {
-                    return false;
-                }
-
-                return type === 'array' ||
-                    length === 0 ||
-                    typeof length === 'number' &&
-                    length > 0 &&
-                    ( length - 1 ) in obj;
-            }
-
-            if (isArrayLike(obj)) {
+            if ($this.isArrayLike(obj)) {
                 length = obj.length;
                 for (; i < length; i++) {
                     if (callback.call(obj[i], i, obj[i]) === false) {
@@ -138,7 +133,7 @@
                 }
             } else {
                 for (i in obj) {
-                    if (callback.call(obj[i], i, obj[i]) === false) {
+                    if (obj.hasOwnProperty(i) && callback.call(obj[i], i, obj[i]) === false) {
                         break;
                     }
                 }
@@ -189,7 +184,7 @@
          * @returns {boolean}
          */
         isFunc: function (functionToCheck) {
-            return this.type(functionToCheck) === 'function';
+            return this.type(functionToCheck) === "function";
         },
 
         /**
@@ -200,13 +195,24 @@
          */
         type: function (mixedVar) {
 
-            if (mixedVar == null) {
-                return mixedVar + '';
+            var toString = Object.prototype.toString,
+                types    = ["Boolean", "Number", "String", "Function", "Array",
+                    "Date", "RegExp", "Object", "Error", "Symbol"];
+
+            if (!$this.class2type) {
+                $this.class2type = {};
+                $this.each(types, function (index) {
+                    $this.class2type["[object " + types[index] + "]"] = types[index].toLowerCase();
+                });
+            }
+
+            if (mixedVar === null) {
+                return mixedVar + "";
             }
 
             // Support: Android<4.0 (functionish RegExp)
-            return typeof mixedVar === 'object' ||
-            typeof mixedVar === 'function' ? (class2type[toString.call(mixedVar)] || 'object') : typeof mixedVar;
+            return typeof mixedVar === "object" ||
+            typeof mixedVar === "function" ? ($this.class2type[toString.call(mixedVar)] || "object") : typeof mixedVar;
         },
 
         /**
@@ -221,13 +227,13 @@
          */
         count: function (variable, isRecursive) {
 
-            var $this = this, property, result = 0;
+            var property, result = 0;
 
-            isRecursive = (typeof isRecursive !== 'undefined' && isRecursive) ? true : false;
+            isRecursive = (typeof isRecursive !== "undefined" && isRecursive) ? true : false;
 
             if (variable === false ||
                 variable === null ||
-                typeof variable === 'undefined'
+                typeof variable === "undefined"
             ) {
                 return 0;
 
@@ -267,16 +273,18 @@
          */
         inArray: function (needle, haystack, strict) {
 
-            var found = false, key;
+            var found = false;
 
             strict = !!strict;
 
-            for (key in haystack) {
+            $this.each(haystack, function (key) {
+                /* jshint -W116 */
                 if ((strict && haystack[key] === needle) || (!strict && haystack[key] == needle)) {
                     found = true;
-                    break;
+                    return false;
                 }
-            }
+                /* jshint +W116 */
+            });
 
             return found;
         },
@@ -291,7 +299,7 @@
          * @returns {boolean}
          */
         isNumeric: function (mixed) {
-            return (typeof(mixed) === 'number' || typeof(mixed) === 'string') && mixed !== '' && !isNaN(mixed);
+            return (typeof (mixed) === "number" || typeof(mixed) === "string") && mixed !== "" && !isNaN(mixed);
         },
 
         /**
@@ -300,6 +308,7 @@
          * @link http://phpjs.org/functions/intval/
          *
          * @param mixed
+         * @param base
          * @returns {Number}
          */
         toInt: function (mixed, base) {
@@ -307,16 +316,18 @@
 
             base = base || 10;
 
-            if (type === 'boolean') {
+            if (type === "boolean") {
                 return +mixed;
 
-            } else if (type === 'string') {
-                mixed   = mixed.replace(/\s/g, '');
+            } else if (type === "string") {
+                mixed   = mixed.replace(/\s/g, "");
                 var tmp = parseInt(mixed, base);
                 return (isNaN(tmp) || !isFinite(tmp)) ? 0 : tmp;
 
-            } else if (type === 'number' && isFinite(mixed)) {
+            } else if (type === "number" && isFinite(mixed)) {
+                /* jshint -W016 */
                 return mixed | 0;
+                /* jshint +W016 */
 
             } else {
                 return 0;
@@ -332,7 +343,9 @@
          * @returns {boolean}
          */
         isInt: function (mixed) {
+            /* jshint -W018 */
             return mixed === +mixed && isFinite(mixed) && !(mixed % 1);
+            /* jshint +W018 */
         },
 
         /**
@@ -345,15 +358,15 @@
 
             var type = typeof mixed;
 
-            if (type === 'boolean') {
+            if (type === "boolean") {
                 return +mixed;
             }
 
-            mixed = '' + mixed;
-            mixed = mixed.replace(/\s/g, '');
-            mixed = mixed.replace(',', '.');
+            mixed = "" + mixed;
+            mixed = mixed.replace(/\s/g, "");
+            mixed = mixed.replace(",", ".");
             mixed = (parseFloat(mixed) || 0);
-            mixed = this.round(mixed, 9); // hack for numbers like '0.30000000000000004'
+            mixed = this.round(mixed, 9); // For numbers like "0.3000000004"
 
             return mixed;
         },
@@ -370,41 +383,46 @@
          * @returns {number}
          */
         round: function (value, precision, mode) {
-            // helper variables
+            /* jshint -W016 */
+            /* jshint -W018 */
+
+            // Helper variables
             var base, floorNum, isHalf, sign;
 
-            // making sure precision is integer
+            // Making sure precision is integer
             precision |= 0;
             base = Math.pow(10, precision);
             value *= base;
 
-            // sign of the number
+            // Sign of the number
             sign     = (value > 0) | -(value < 0);
             isHalf   = value % 1 === 0.5 * sign;
             floorNum = Math.floor(value);
 
             if (isHalf) {
-                mode = mode ? mode.toUpperCase() : 'DEFAULT';
+                mode = mode ? mode.toUpperCase() : "DEFAULT";
                 switch (mode) {
-                    case 'DOWN':
-                        // rounds .5 toward zero
+                    case "DOWN":
+                        // Rounds .5 toward zero
                         value = floorNum + (sign < 0);
                         break;
-                    case 'EVEN':
-                        // rouds .5 towards the next even integer
+                    case "EVEN":
+                        // Rouds .5 towards the next even integer
                         value = floorNum + (floorNum % 2 * sign);
                         break;
-                    case 'ODD':
-                        // rounds .5 towards the next odd integer
+                    case "ODD":
+                        // Rounds .5 towards the next odd integer
                         value = floorNum + !(floorNum % 2);
                         break;
                     default:
-                        // rounds .5 away from zero
+                        // Rounds .5 away from zero
                         value = floorNum + (sign > 0);
                 }
             }
 
             return (isHalf ? value : Math.round(value)) / base;
+            /* jshint +W016 */
+            /* jshint +W018 */
         },
 
         /**
@@ -418,15 +436,14 @@
          * @returns {*}
          */
         rand: function (min, max) {
-            var $this = this,
-                argc  = arguments.length;
+            var argc = arguments.length;
 
             if (argc === 0) {
                 min = 0;
                 max = 2147483647;
 
             } else if (argc === 1) {
-                throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
+                throw new Error("Warning: rand() expects exactly 2 parameters, 1 given");
 
             } else {
                 min = $this.toInt(min);
@@ -448,25 +465,23 @@
          */
         implode: function (glue, pieces) {
 
-            var i      = '',
-                $this  = this,
-                retVal = '',
-                tGlue  = '';
+            var retVal = "",
+                tGlue  = "";
 
             if (arguments.length === 1) {
                 pieces = glue;
-                glue   = '';
+                glue   = "";
             }
 
-            if (typeof pieces === 'object') {
-                if ($this.type(pieces) === 'array') {
+            if (typeof pieces === "object") {
+                if ($this.type(pieces) === "array") {
                     return pieces.join(glue);
                 }
 
-                for (i in pieces) {
+                $this.each(pieces, function (i) {
                     retVal += tGlue + pieces[i];
                     tGlue = glue;
-                }
+                });
 
                 return retVal;
             }
@@ -486,13 +501,13 @@
         explode: function (delimiter, string, limit) {
 
             if (arguments.length < 2 ||
-                typeof delimiter === 'undefined' ||
-                typeof string === 'undefined'
+                typeof delimiter === "undefined" ||
+                typeof string === "undefined"
             ) {
                 return null;
             }
 
-            if (delimiter === '' ||
+            if (delimiter === "" ||
                 delimiter === false ||
                 delimiter === null
             ) {
@@ -500,16 +515,16 @@
             }
 
             if (delimiter === true) {
-                delimiter = '1';
+                delimiter = "1";
             }
 
             // Here we go...
-            delimiter += '';
-            string += '';
+            delimiter += "";
+            string += "";
 
             var splited = string.split(delimiter);
 
-            if (typeof limit === 'undefined') {
+            if (typeof limit === "undefined") {
                 return splited;
             }
 
@@ -520,7 +535,10 @@
 
             // Positive limit
             if (limit > 0) {
-                if (limit >= splited.length) return splited;
+                if (limit >= splited.length) {
+                    return splited;
+                }
+
                 return splited.slice(0, limit - 1)
                     .concat([splited.slice(limit - 1)
                         .join(delimiter)
@@ -528,7 +546,9 @@
             }
 
             // Negative limit
-            if (-limit >= splited.length) return [];
+            if (-limit >= splited.length) {
+                return [];
+            }
 
             splited.splice(splited.length + limit);
 
@@ -547,23 +567,23 @@
          */
         stripTags: function (input, allowed) {
 
-            allowed = (((allowed || '') + '')
+            allowed = (((allowed || "") + "")
                 .toLowerCase()
                 .match(/<[a-z][a-z0-9]*>/g) || [])
-                .join('');
+                .join("");
 
             var tags               = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
                 commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
 
             return input
-                .replace(commentsAndPhpTags, '')
+                .replace(commentsAndPhpTags, "")
                 .replace(tags, function ($0, $1) {
-                    return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+                    return allowed.indexOf("<" + $1.toLowerCase() + ">") > -1 ? $0 : "";
                 });
         },
 
         /**
-         * Alias for console log + backtrace. For debug only. Works only if environment is 'development' (DEBUG = true)
+         * Alias for console log + backtrace. For debug only. Works only if environment is "development" (DEBUG = true)
          *
          * @param vars mixed
          * @param name String
@@ -572,41 +592,41 @@
          */
         dump: function (vars, name, showTrace) {
 
-            var $this = this;
+            var console = window.parent && window.parent.console && window.parent.console;
 
             if (!this.DEBUG) {
                 return false;
             }
 
             // Get type
-            var type    = '',
+            var type    = "",
                 varType = $this.type(vars);
 
-            if (varType === 'string' || varType === 'array') {
-                type = ' (' + varType + ', ' + $this.count(vars) + ')';
+            if (varType === "string" || varType === "array") {
+                type = " (" + varType + ", " + $this.count(vars) + ")";
             } else {
-                type = ' (' + varType + ')';
+                type = " (" + varType + ")";
             }
 
             // Wrap in vars quote if string
-            if (varType === 'string') {
-                vars = '\'' + vars + '\'';
+            if (varType === "string") {
+                vars = "\"" + vars + "\"";
             }
 
             // Get var name
             if (!name) {
-                name = '...' + type + ' = ';
+                name = "..." + type + " = ";
             } else {
-                name += type + ' = ';
+                name += type + " = ";
             }
 
             // Dump var
-            if (window.parent && window.parent.console && window.parent.console.log) {
-                window.parent.console.log(name, vars);
+            if (console.log) {
+                console.log(name, vars);
             }
 
             // Show backtrace
-            if (showTrace && typeof console.trace !== 'undefined') {
+            if (showTrace && console.trace !== "undefined") {
                 console.trace();
                 return false;
             }

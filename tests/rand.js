@@ -25,7 +25,7 @@
             expect(helper.rand(51, 52)).toBeLessThan(53);
             expect(function () {
                 helper.rand(1);
-            }).toThrow(new Error('Warning: rand() expects exactly 2 parameters, 1 given'));
+            }).toThrow(new Error("Warning: rand() expects exactly 2 parameters, 1 given"));
         });
     });
 
