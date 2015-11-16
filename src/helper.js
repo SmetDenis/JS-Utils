@@ -23,9 +23,12 @@
         types      = ['Boolean', 'Number', 'String', 'Function', 'Array',
             'Date', 'RegExp', 'Object', 'Error', 'Symbol'];
 
-    (function() {
-        for (var index in types) {
-            class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
+    (function () {
+        var index;
+        if (types) {
+            for (index in types) {
+                class2type['[object ' + types[index] + ']'] = types[index].toLowerCase();
+            }
         }
     }());
 
@@ -91,6 +94,60 @@
         },
 
         /**
+         * @param obj
+         * @returns {boolean}
+         */
+        isWindow: function (obj) {
+            return obj != null && obj === obj.window;
+        },
+
+        /**
+         * @param obj
+         * @param callback
+         * @returns {*}
+         */
+        each: function (obj, callback) {
+            var length, i = 0, $this = this;
+
+            function isArrayLike(obj) {
+
+                // Support: iOS 8.2 (not reproducible in simulator)
+                // `in` check used to prevent JIT error (gh-2145)
+                // hasOwn isn't used here due to false negatives
+                // regarding Nodelist length in IE
+                var length = !!obj && 'length' in obj && obj.length,
+                    type   = $this.type(obj);
+
+                if (type === 'function' || $this.isWindow(obj)) {
+                    return false;
+                }
+
+                return type === 'array' ||
+                    length === 0 ||
+                    typeof length === 'number' &&
+                    length > 0 &&
+                    ( length - 1 ) in obj;
+            }
+
+            if (isArrayLike(obj)) {
+                length = obj.length;
+                for (; i < length; i++) {
+                    if (callback.call(obj[i], i, obj[i]) === false) {
+                        break;
+                    }
+                }
+            } else {
+                for (i in obj) {
+                    if (callback.call(obj[i], i, obj[i]) === false) {
+                        break;
+                    }
+                }
+            }
+
+            return obj;
+        },
+
+        /**
          * Check and get variable
          *
          * @returns {*}
@@ -115,7 +172,7 @@
 
                 return args[0];
 
-            } else if (argc === 3) {
+            } else {
 
                 if (args[0][args[1]] === undefined || args[0][args[1]] === null) {
                     return args[2];
