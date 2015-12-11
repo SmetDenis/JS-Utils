@@ -11,3 +11,6 @@ script:
   - npm run test
   - npm run jshint
   - npm run jscs
+
+notifications:
+  slack: jbzoo:RPyzxVQZPuPhgvm1Q6fDvK3C
