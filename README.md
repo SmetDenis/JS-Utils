@@ -2,6 +2,14 @@
 [![Code Climate](https://codeclimate.com/github/JBZoo/JS-Utils/badges/gpa.svg)](https://codeclimate.com/github/JBZoo/JS-Utils)
 
 
-### License
-MIT
 
+## Unit tests and check code style
+```sh
+make
+make test-all
+```
+
+
+## License
+
+MIT
