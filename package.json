@@ -26,11 +26,6 @@
         "phantomjs-prebuilt"       : "^2.1.7"
     },
     "devDependencies"      : {},
-    "scripts"              : {
-        "test"   : "./node_modules/.bin/karma start --single-run --browsers PhantomJS",
-        "jshint" : "./node_modules/.bin/jshint src",
-        "jscs"   : "./node_modules/.bin/jscs src"
-    },
     "optionalDependencies" : {},
     "engines"              : {
         "node" : "*"

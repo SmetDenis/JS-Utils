@@ -8,9 +8,5 @@ before_script:
   git clone --branch=master https://github.com/JBZoo/Misc.git build/misc;
 
 script:
-  - npm run test
-  - npm run jshint
-  - npm run jscs
-
-notifications:
-  slack: jbzoo:RPyzxVQZPuPhgvm1Q6fDvK3C
+  - make
+  - make test-all
