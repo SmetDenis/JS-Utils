@@ -23,12 +23,15 @@ update:
 
 test:
 	@echo -e "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Run all tests \033[0m"
+	@chmod +x ./node_modules/.bin/karma
 	./node_modules/.bin/karma start --single-run --browsers PhantomJS
 
 jshint:
 	@echo -e "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Run jshint \033[0m"
+	@chmod +x ./node_modules/.bin/jshint
 	./node_modules/.bin/jshint src
 
 jscs:
 	@echo -e "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Run jscs \033[0m"
+	@chmod +x ./node_modules/.bin/jscs
 	./node_modules/.bin/jscs src
