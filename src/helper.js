@@ -594,7 +594,7 @@
 
             var console = window.parent && window.parent.console && window.parent.console;
 
-            if (!this.DEBUG) {
+            if (!JBZoo.DEBUG) {
                 return false;
             }
 
